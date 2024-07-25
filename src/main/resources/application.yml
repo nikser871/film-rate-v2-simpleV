@@ -1,0 +1,22 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:h2:mem:db
+    driver-class-name: org.h2.Driver
+    username: admin
+    password:
+
+  application:
+    name: film-rate-v2-simpleV
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+#    defer-datasource-initialization: true
+
+custom:
+  base-url: http://localhost:8080
