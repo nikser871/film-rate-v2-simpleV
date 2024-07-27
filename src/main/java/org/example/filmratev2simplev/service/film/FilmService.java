@@ -14,4 +14,5 @@ public interface FilmService {
     Optional<FilmDTO> updateFilmById(Long id, FilmDTO film);
     List<FilmDTO> getAllFilms();
     Optional<FilmDTO> getFilmById(Long id);
+    List<FilmDTO> getTopFilms(Long count);
 }

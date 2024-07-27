@@ -19,7 +19,7 @@ public class Mpa {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    @Size(min = 2, max = 7)
+    @Size(min = 1, max = 7)
     private String name;
 
 }

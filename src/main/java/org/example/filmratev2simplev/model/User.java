@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -46,13 +47,16 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdOn;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserFilm> userFilm;
+    private List<UserFilm> userFilm = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user1", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Friendship> myFriends;
+    private List<Friendship> myFriends = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user2", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Friendship> myFollowers; // ^_^
+    private List<Friendship> myFollowers = new ArrayList<>(); // ^_^
 
 }

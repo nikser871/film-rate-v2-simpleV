@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,15 +38,17 @@ public class Film {
 //    @Positive
     private Long duration;
 
-    @OneToMany(mappedBy = "film")
-    private List<FilmGenre> filmGenres;
+    @Builder.Default
+    @OneToMany(mappedBy = "film", cascade = CascadeType.ALL)
+    private List<FilmGenre> filmGenres = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mpa_id", nullable = false)
     private Mpa mpa;
 
-    @OneToMany(mappedBy = "film", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserFilm> userFilms;
+    @Builder.Default
+    @OneToMany(mappedBy = "film", fetch = FetchType.LAZY)
+    private List<UserFilm> userFilms = new ArrayList<>();
 
 
 }

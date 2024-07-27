@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //    void likeFilm(Long userId, Long filmId);
 //
     @Modifying
-    @Query(value = "delete from UserFilm u WHERE u.user.id = :userID and u.film.id = :filmId")
+    @Query(value = "delete from UserFilm u WHERE u.user.id = :userId and u.film.id = :filmId")
     void deleteLikeFilm(@Param("userId") Long userId, @Param("filmId") Long filmId);
 //
 //    @Modifying
@@ -30,7 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select f.user2 from Friendship f where f.user1.id = :userId")
     List<User> getFriends(@Param("userId") Long userId);
 
-    @Query(value = "select uf.user from UserFilm uf where uf.film.id = :filmID")
+    @Query(value = "select uf.user from UserFilm uf where uf.film.id = :filmId")
     List<User> getFollowersByFilmId(@Param("filmId") Long filmId);
 //
     @Query(value = "select us1.user2 from Friendship us1" +

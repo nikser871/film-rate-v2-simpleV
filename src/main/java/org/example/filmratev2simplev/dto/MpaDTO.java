@@ -15,6 +15,8 @@ public class MpaDTO {
 
     private Long id;
 
-    @Size(min = 2, max = 7)
+    @Size(min = 1, max = 7)
     private String name;
+
+
 }

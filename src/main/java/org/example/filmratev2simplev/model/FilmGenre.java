@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.mapping.Join;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,26 +20,27 @@ import org.hibernate.mapping.Join;
 public class FilmGenre {
 
     @EmbeddedId
-    private Id id;
+    private Id id = new Id();
 
     @ManyToOne
-    @JoinColumn(name = "film_id")
+    @JoinColumn(name = "film_id", insertable=false, updatable=false)
     private Film film;
 
     @ManyToOne
-    @JoinColumn(name = "genre_id")
+    @JoinColumn(name = "genre_id", insertable=false, updatable=false)
     private Genre genre;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    static class Id {
+    @Embeddable
+    public static class Id implements Serializable {
 
-        @Column(name = "film_id", nullable = false)
+        @Column(name = "film_id")
         private Long filmId;
 
-        @Column(name = "genre_id", nullable = false)
+        @Column(name = "genre_id")
         private Long genreId;
 
     }

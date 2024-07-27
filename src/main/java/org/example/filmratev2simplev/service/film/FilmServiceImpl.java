@@ -6,13 +6,14 @@ import org.example.filmratev2simplev.dto.FilmDTO;
 import org.example.filmratev2simplev.mappers.FilmMapper;
 import org.example.filmratev2simplev.model.Film;
 import org.example.filmratev2simplev.model.FilmGenre;
+import org.example.filmratev2simplev.model.Genre;
 import org.example.filmratev2simplev.model.UserFilm;
 import org.example.filmratev2simplev.repositories.FilmRepository;
 import org.example.filmratev2simplev.repositories.GenreRepository;
+import org.example.filmratev2simplev.repositories.MpaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -23,20 +24,38 @@ public class FilmServiceImpl implements FilmService {
     private final FilmRepository filmRep;
     private final FilmMapper mapper;
     private final GenreRepository genreRep;
+    private final MpaRepository mpaRep;
 
-    public FilmServiceImpl(AppProperties appProperties, FilmRepository filmRep, FilmMapper mapper, GenreRepository genreRep) {
+    public FilmServiceImpl(AppProperties appProperties, FilmRepository filmRep, FilmMapper mapper, GenreRepository genreRep, MpaRepository mpaRep) {
         this.appProperties = appProperties;
         this.filmRep = filmRep;
         this.mapper = mapper;
         this.genreRep = genreRep;
+        this.mpaRep = mpaRep;
     }
 
     @Override
     public Optional<FilmDTO> createFilm(FilmDTO film) {
 
-        return Optional.ofNullable(
-                mapper.filmToFilmDTO(filmRep.save(mapper.filmDTOToFilm(film)))
-        );
+        Film film1 = mapper.filmDTOToFilm(film);
+
+        List<FilmGenre> filmGenres = new ArrayList<>();
+        film1.setFilmGenres(new ArrayList<>());
+        film1.setUserFilms(new ArrayList<>());
+        film1.setMpa(mpaRep.findById(film.getId()).orElseThrow(NotFoundException::new));
+
+        film.getGenresId()
+                .forEach(x -> {
+                    Genre genre = genreRep.findById(x).orElseThrow(NotFoundException::new);
+                    FilmGenre filmGenre = new FilmGenre();
+                    filmGenre.add(film1, genre);
+                    filmGenres.add(filmGenre);
+                });
+
+        film1.setFilmGenres(filmGenres);
+
+        return Optional.ofNullable(mapper.filmToFilmDTO(filmRep.save(film1)));
+
     }
 
     @Override
@@ -84,15 +103,18 @@ public class FilmServiceImpl implements FilmService {
 //        this.filmStorage = filmStorage;
 //    }
 //
-//    public Collection<Film> getTopFilms(int count) {
-//        List<Film> list = filmStorage.getAllFilms().stream().toList();
-//        return list
-//                .stream()
-//                .sorted(Comparator.comparing(x -> filmStorage.getCountOfFollowers(x.getId()).orElse(0),
-//                        Comparator.reverseOrder()))
-//                .limit(count)
-//                .toList();
-//    }
+    public List<FilmDTO> getTopFilms(Long count) {
+        List<Film> list = filmRep.findAll();
+        return list
+                .stream()
+                .sorted(
+                        Comparator.comparing(x -> filmRep.getCountOfFollowers(x.getId()),
+                        Comparator.reverseOrder())
+                )
+                .limit(count)
+                .map(mapper::filmToFilmDTO)
+                .toList();
+    }
 
 
 }

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 
 @Data
 @NoArgsConstructor
@@ -17,24 +19,27 @@ import lombok.NoArgsConstructor;
 public class UserFilm {
 
     @EmbeddedId
-    private Id id;
+    private Id id = new Id();
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", insertable=false, updatable=false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "film_id")
+    @JoinColumn(name = "film_id", insertable=false, updatable=false)
     private Film film;
 
     @Data
     @AllArgsConstructor
-    static class Id {
+    @NoArgsConstructor
+    @Builder
+    @Embeddable
+    public static class Id implements Serializable {
 
-        @Column(name = "user_id", nullable = false)
+        @Column(name = "user_id")
         private Long userId;
 
-        @Column(name = "film_id", nullable = false)
+        @Column(name = "film_id")
         private Long filmId;
 
     }

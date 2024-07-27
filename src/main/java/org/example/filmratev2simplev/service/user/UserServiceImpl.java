@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteFriend(Long userId, Long friendId) {
+    public void deleteFriend(Long userId, Long friendId) { // ?????
         userRep.deleteFriend(userId, friendId);
     }
 

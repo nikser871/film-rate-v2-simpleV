@@ -3,6 +3,7 @@ package org.example.filmratev2simplev.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,7 +22,8 @@ public class Genre {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<FilmGenre> filmGenreList;
+    @Builder.Default
+    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY)
+    private List<FilmGenre> filmGenreList = new ArrayList<>();
 
 }
