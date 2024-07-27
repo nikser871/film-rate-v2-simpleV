@@ -30,12 +30,14 @@ public class FilmGenre {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     static class Id {
 
-        @Column(name = "film_id")
+        @Column(name = "film_id", nullable = false)
         private Long filmId;
 
-        @Column(name = "genre_id")
+        @Column(name = "genre_id", nullable = false)
         private Long genreId;
 
     }

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-
+@Data
 @ConfigurationProperties("custom")
 public class AppProperties {
     private String baseUrl;

@@ -31,10 +31,10 @@ public class UserFilm {
     @AllArgsConstructor
     static class Id {
 
-        @Column(name = "user_id")
+        @Column(name = "user_id", nullable = false)
         private Long userId;
 
-        @Column(name = "film_id")
+        @Column(name = "film_id", nullable = false)
         private Long filmId;
 
     }
