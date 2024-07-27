@@ -1,23 +1,23 @@
 package org.example.filmratev2simplev.dto;
 
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
+
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class FilmDTO {
+
+    private Long id;
 
     @NotNull(message = "Name is null")
     @NotBlank(message = "Name is null")
@@ -26,11 +26,18 @@ public class FilmDTO {
     private String description;
 
     @NotNull(message = "releaseDate is null")
-    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}") // '2001-12-12'
+    @Past
+    @Pattern(regexp = "^((19|20)[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", message = "Date of release can't be before 1900") // '2001-12-12'
     private LocalDate releaseDate;
 
     @NotNull(message = "releaseDate is null")
     @Positive
-    private int duration;
+    private Long duration;
+
+    @NotNull
+    List<Long> genresId;
+
+    @NotNull
+    private Long mpaId;
 
 }

@@ -16,7 +16,14 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create
+    show-sql: true
+
 #    defer-datasource-initialization: true
 
 custom:
   base-url: http://localhost:8080
+  base-url-genre: http://localhost:8080/genres
+  base-url-mpa: http://localhost:8080/mpa
+  base-url-film: http://localhost:8080/films
+  base-url-user: http://localhost:8080/users
+

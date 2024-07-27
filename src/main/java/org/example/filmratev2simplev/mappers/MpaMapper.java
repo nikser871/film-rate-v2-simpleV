@@ -1,12 +1,13 @@
 package org.example.filmratev2simplev.mappers;
 
 import org.example.filmratev2simplev.dto.MpaDTO;
+import org.example.filmratev2simplev.model.Mpa;
 import org.mapstruct.Mapper;
 
 @Mapper
 public interface MpaMapper {
 
-    MpaDTO mpaToMpaDTO(MpaDTO mpaDTO);
+    MpaDTO mpaToMpaDTO(Mpa mpa);
 
-    MpaDTO mpaDTOMpaToMpaDTO(MpaDTO mpaDTO);
+    Mpa mpaDTOtoMpa(MpaDTO mpaDTO);
 }

@@ -9,7 +9,6 @@ import java.util.List;
 
 
 @Data
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -36,7 +35,7 @@ public class Film {
     @Column(nullable = false)
 //    @NotNull(message = "releaseDate is null")
 //    @Positive
-    private int duration;
+    private Long duration;
 
     @OneToMany(mappedBy = "film")
     private List<FilmGenre> filmGenres;
@@ -45,7 +44,7 @@ public class Film {
     @JoinColumn(name = "mpa_id", nullable = false)
     private Mpa mpa;
 
-    @OneToMany(mappedBy = "film", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "film", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserFilm> userFilms;
 
 

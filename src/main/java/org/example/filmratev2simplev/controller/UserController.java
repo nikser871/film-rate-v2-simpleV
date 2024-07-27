@@ -1,14 +1,20 @@
 package org.example.filmratev2simplev.controller;
 
+import org.example.filmratev2simplev.config.AppProperties;
+import org.example.filmratev2simplev.dto.UserDTO;
 import org.example.filmratev2simplev.model.User;
-import org.example.filmratev2simplev.service.UserService;
+import org.example.filmratev2simplev.service.user.UserService;
+import org.example.filmratev2simplev.service.user.UserServiceImpl;
 import org.example.filmratev2simplev.storage.user.UserStorage;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -16,71 +22,101 @@ import java.util.Optional;
 @RequestMapping(value = "/users")
 public class UserController {
 
-    private final UserStorage userStorage;
-    private final UserService service;
+    private final AppProperties appProperties;
+    private final UserService userService;
 
-    @Autowired
-    public UserController(UserStorage userStorage, UserService service) {
-        this.userStorage = userStorage;
-        this.service = service;
+    private static final String LIKE_FILM = "/user/{userId}/film/like/{filmId}";
+    private static final String DELETE_FILM = "/user/{userId}/film/delete/{filmId}";
+    private static final String FRIEND = "/{id}/friends/{friendId}";
+    private static final String FRIENDS = "/{id}/friends";
+    private static final String COMMON_FRIENDS = "/{id}/friends/common/{otherId}";
+    private static final String FILM_FOLLOWERS = "/count/followers/film/{id}";
+    private static final String USER_ID = "/user/{id}";
+
+    public UserController(AppProperties appProperties, UserService userService) {
+        this.appProperties = appProperties;
+        this.userService = userService;
     }
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
-        return userStorage.createUser(user);
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO user) {
+        UserDTO createdUser = userService.createUser(user).orElseThrow(InternalServerError::new);
+        return ResponseEntity.created(
+                URI.create(appProperties.getBaseUrlUser() + "/" + createdUser.getId())
+        ).build();
 
     }
 
-    @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
-        return userStorage.updateUser(user);
+    //
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO user, @PathVariable Long id) {
+        UserDTO updatedUser = userService.updateUserById(id, user).orElseThrow(NotFoundException::new);
+        return ResponseEntity.ok(updatedUser);
+
 
     }
 
     @GetMapping
-    public Collection<User> getAllUsers() {
-        return userStorage.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PutMapping("/user/{userId}/film/like/{filmId}")
-    public String likeFilm(@PathVariable int userId,@PathVariable int filmId) {
-        userStorage.likeFilm(userId, filmId);
-        return "OK!!!";
+    @PutMapping(LIKE_FILM)
+    public ResponseEntity<String> likeFilm(@PathVariable Long userId, @PathVariable Long filmId) {
+        userService.likeFilm(userId, filmId);
+        return ResponseEntity.ok(
+                "LIKED!!!"
+        );
     }
 
-    @DeleteMapping("/user/{userId}/film/delete/{filmId}")
-    public String deleteFilm(@PathVariable int userId,@PathVariable int filmId) {
-        return userStorage.deleteLikeFilm(userId, filmId);
+    @DeleteMapping(DELETE_FILM)
+    public ResponseEntity<String> deleteFilm(@PathVariable Long userId, @PathVariable Long filmId) {
+        return ResponseEntity.ok(
+                "DELETED FILM FROM FAVOURITES!!!"
+        );
     }
 
-    @PutMapping(value = "{id}/friends/{friendId}")
-    public String addFriend(@PathVariable int id, @PathVariable int friendId){
-        return service.addFriend(id, friendId);
+    @PutMapping(FRIEND)
+    public ResponseEntity<String> addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.addFriend(id, friendId);
+
+        return ResponseEntity.ok(
+                "You have added a new Friend!!!"
+        );
     }
 
-    @DeleteMapping(value = "{id}/friends/{friendId}")
-    public String deleteFriend(@PathVariable int id, @PathVariable int friendId){
-        return service.deleteFriend(id, friendId);
+    @DeleteMapping(FRIEND)
+    public ResponseEntity<String> deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.deleteFriend(id, friendId);
+        return ResponseEntity.ok(
+                "You've deleted an old Friend!!!"
+        );
     }
 
-    @GetMapping(value = "{id}/friends")
-    public Collection<User> getListOfFriends(@PathVariable int id){
-        return service.getFriends(id);
+    @GetMapping(FRIENDS)
+    public ResponseEntity<List<UserDTO>> getListOfFriends(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                userService.getFriends(id)
+        );
     }
 
-    @GetMapping(value = "{id}/friends/common/{otherId}")
-    public Collection<User> getCommonFriends(@PathVariable int id, @PathVariable int otherId){
-        return service.getCommonFriends(id, otherId);
+    @GetMapping(COMMON_FRIENDS)
+    public ResponseEntity<List<UserDTO>> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+        return ResponseEntity.ok(
+                userService.getCommonFriends(id, otherId)
+        );
     }
 
-    @GetMapping (value = "/count/followers/film/{id}")
-    public Collection<User> getFollowersByFilmId(@PathVariable int id) {
-        return userStorage.getFollowersByFilmId(id);
+    @GetMapping(FILM_FOLLOWERS)
+    public ResponseEntity<List<UserDTO>> getFollowersByFilmId(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                userService.getFollowersByFilmId(id)
+        );
     }
 
-    @GetMapping (value = "/user/{id}")
-    public Optional<User> getUserById(@PathVariable int id) {
-        return userStorage.getUserById(id);
+    @GetMapping(USER_ID)
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id).orElseThrow(NotFoundException::new));
     }
 
 }

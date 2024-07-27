@@ -1,15 +1,23 @@
 package org.example.filmratev2simplev.controller;
 
+import jakarta.validation.Valid;
+import org.example.filmratev2simplev.config.AppProperties;
+import org.example.filmratev2simplev.dto.GenreDTO;
 import org.example.filmratev2simplev.model.Genre;
+import org.example.filmratev2simplev.service.genre.GenreService;
+import org.example.filmratev2simplev.service.genre.GenreServiceImpl;
 import org.example.filmratev2simplev.storage.genre.GenreStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -17,21 +25,34 @@ import java.util.Optional;
 @RequestMapping(value = "/genres")
 public class GenreController {
 
-    private final GenreStorage genreStorage;
+    private final GenreService service;
+    private final AppProperties appProperties;
 
-    @Autowired
-    public GenreController(GenreStorage genreStorage) {
-        this.genreStorage = genreStorage;
+    public GenreController(GenreService service, AppProperties appProperties) {
+        this.service = service;
+        this.appProperties = appProperties;
+    }
+
+    @PostMapping
+    public ResponseEntity createGenre(@RequestBody @Valid GenreDTO dto) throws URISyntaxException {
+        GenreDTO savedGenre = service.createGenre(dto).orElseThrow(InternalServerError::new);
+        return ResponseEntity.created(
+                URI.create(appProperties.getBaseUrlGenre() + "/" + savedGenre.getId())
+        )
+                .build();
     }
 
     @GetMapping
-    public Collection<Genre> getAllGenres() {
-        return genreStorage.getGenres();
+    public ResponseEntity<List<GenreDTO>> getAllGenres() {
+        List<GenreDTO> genreDTOS = service.getGenres();
+        return ResponseEntity.ok(genreDTOS);
     }
 
 
     @GetMapping("/{id}")
-    public Optional<Genre> getGenreById(@PathVariable int id) {
-        return genreStorage.getGenreById(id);
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<GenreDTO> getGenreById(@PathVariable Long id) {
+        GenreDTO genreDTO = service.getGenreById(id).orElseThrow(NotFoundException::new);
+        return ResponseEntity.ok(genreDTO);
     }
 }

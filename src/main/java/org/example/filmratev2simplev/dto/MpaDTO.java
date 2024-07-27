@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MpaDTO {
 
+    private Long id;
+
     @Size(min = 2, max = 7)
     private String name;
 }

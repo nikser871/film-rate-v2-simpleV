@@ -9,4 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("custom")
 public class AppProperties {
     private String baseUrl;
+    private String baseUrlGenre;
+    private String baseUrlMpa;
+    private String baseUrlFilm;
+    private String baseUrlUser;
+
 }

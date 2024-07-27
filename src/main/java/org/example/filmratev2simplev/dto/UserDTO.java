@@ -15,6 +15,8 @@ import java.time.LocalDate;
 @Builder
 public class UserDTO {
 
+    private Long id;
+
     @NotNull
     @Size(min = 3)
     private String name;
@@ -23,7 +25,7 @@ public class UserDTO {
     @Size(min = 3)
     private String login;
 
-    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}") // '2001-12-12'
+    @Pattern(regexp = "^((19|20)[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", message = "Date of birth can't be before 1900") // '2001-12-12'
 //    @DateTimeFormat
     private LocalDate birthday;
 
