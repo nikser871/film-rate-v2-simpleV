@@ -1,5 +1,6 @@
 package org.example.filmratev2simplev.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.filmratev2simplev.config.AppProperties;
 import org.example.filmratev2simplev.dto.UserDTO;
 import org.example.filmratev2simplev.service.user.UserService;
@@ -13,6 +14,7 @@ import java.util.List;
 
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
@@ -28,13 +30,8 @@ public class UserController {
     private static final String FILM_FOLLOWERS = "/count/followers/film/{id}";
     private static final String USER_ID = "/user/{id}";
 
-    public UserController(AppProperties appProperties, UserService userService) {
-        this.appProperties = appProperties;
-        this.userService = userService;
-    }
-
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO user) {
+    public ResponseEntity createUser(@Valid @RequestBody UserDTO user) {
         UserDTO createdUser = userService.createUser(user).orElseThrow(InternalServerError::new);
         return ResponseEntity.created(
                 URI.create(appProperties.getBaseUrlUser() + "/" + createdUser.getId())

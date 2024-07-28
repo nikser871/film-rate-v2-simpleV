@@ -16,7 +16,7 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({NullPointerException.class})
+    @ExceptionHandler({NullPointerException.class, NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse objectNotFound(NullPointerException e){
         return new ErrorResponse("Object wasn't found");
@@ -25,7 +25,15 @@ public class ErrorHandler {
     @ExceptionHandler({Throwable.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse objectNotFound(Throwable e){
+        return new ErrorResponse("Ошибка!!!");
+    }
+
+    @ExceptionHandler({InternalServerError.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse internalError(Throwable e){
         return new ErrorResponse(e.getMessage());
     }
+
+
 
 }
