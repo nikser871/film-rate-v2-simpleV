@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @Builder
 public class FilmDTO {
 
+    @Null
     private Long id;
 
     @NotNull(message = "Name is null")
@@ -26,8 +28,8 @@ public class FilmDTO {
     private String description;
 
     @NotNull(message = "releaseDate is null")
-    @Past
-    @Pattern(regexp = "^((19|20)[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", message = "Date of release can't be before 1900") // '2001-12-12'
+//    @Pattern(regexp = "^((19|20)[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", message = "Date of release can't be before 1900") // '2001-12-12'
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate releaseDate;
 
     @NotNull(message = "releaseDate is null")

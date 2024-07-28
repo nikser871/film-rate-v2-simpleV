@@ -1,10 +1,7 @@
 package org.example.filmratev2simplev.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -12,6 +9,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = {"user1", "user2"})
 @Entity
 @Table(name = "friendship")
 public class Friendship {
@@ -37,7 +36,7 @@ public class Friendship {
     @JoinColumn(name = "user_id1", insertable=false, updatable=false)
     private User user1;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id2", insertable=false, updatable=false)
     private User user2;
 

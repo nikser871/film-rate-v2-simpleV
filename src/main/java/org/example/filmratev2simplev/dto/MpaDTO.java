@@ -1,6 +1,7 @@
 package org.example.filmratev2simplev.dto;
 
-import jakarta.persistence.Column;
+
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MpaDTO {
 
+    @Null
     private Long id;
 
     @Size(min = 1, max = 7)

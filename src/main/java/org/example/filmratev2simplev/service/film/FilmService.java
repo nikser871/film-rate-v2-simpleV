@@ -1,10 +1,6 @@
 package org.example.filmratev2simplev.service.film;
 
 import org.example.filmratev2simplev.dto.FilmDTO;
-import org.example.filmratev2simplev.model.Film;
-import org.springframework.http.HttpHeaders;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

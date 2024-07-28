@@ -25,7 +25,7 @@ public class ErrorHandler {
     @ExceptionHandler({Throwable.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse objectNotFound(Throwable e){
-        return new ErrorResponse("Произошла непредвиденная ошибка!");
+        return new ErrorResponse(e.getMessage());
     }
 
 }

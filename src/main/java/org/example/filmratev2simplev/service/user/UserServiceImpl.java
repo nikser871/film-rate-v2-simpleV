@@ -8,12 +8,13 @@ import org.example.filmratev2simplev.model.Friendship;
 import org.example.filmratev2simplev.model.User;
 import org.example.filmratev2simplev.model.UserFilm;
 import org.example.filmratev2simplev.repositories.FilmRepository;
+import org.example.filmratev2simplev.repositories.FriendshipRepository;
+import org.example.filmratev2simplev.repositories.UserFilmRepository;
 import org.example.filmratev2simplev.repositories.UserRepository;
-import org.example.filmratev2simplev.storage.user.UserStorage;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,43 +25,24 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
     private final UserRepository userRep;
     private final FilmRepository filmRep;
+    private final FriendshipRepository friendshipRep;
+    private final UserFilmRepository userFilmRep;
 
-    public UserServiceImpl(UserMapper mapper, UserRepository userRep, FilmRepository filmRep) {
+
+    public UserServiceImpl(UserMapper mapper, UserRepository userRep, FilmRepository filmRep, FriendshipRepository friendshipRep, UserFilmRepository userFilmRep) {
         this.mapper = mapper;
         this.userRep = userRep;
         this.filmRep = filmRep;
+        this.friendshipRep = friendshipRep;
+        this.userFilmRep = userFilmRep;
     }
-
-//
-//    public String addFriend(int id1, int id2) {
-//        userStorage.addFriend(id1, id2);
-//        return "Well done!!!";
-//    }
-//
-//    public String deleteFriend(int id1, int id2) {
-//        userStorage.deleteFriend(id1, id2);
-//        return "Well delete!!!";
-//    }
-//
-//    public Collection<User> getFriends(int userId) {
-//        return userStorage.getFriends(userId);
-//    }
-//
-//    public Collection<User> getCommonFriends(int id1, int id2) {
-//        List<User> friendsUser1 = (List<User>) userStorage.getFriends(id1);
-//        List<User> friendsUser2 = (List<User>) userStorage.getFriends(id2);
-//        System.out.println("sdasdasdasdasd");
-//
-//        return friendsUser2.stream()
-//                .filter(friendsUser1::contains)
-//                .toList();
-//
-//    }
 
 
     @Override
     public Optional<UserDTO> createUser(UserDTO userDTO) {
-        return Optional.ofNullable(mapper.userToUserDTO(userRep.save(mapper.userDTOToUser(userDTO))));
+        return Optional.ofNullable(
+                mapper.userToUserDTO(userRep.save(mapper.userDTOToUser(userDTO)))
+        );
     }
 
     @Override
@@ -92,22 +74,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDTO> getUserById(Long id) {
-        return Optional.ofNullable(mapper.userToUserDTO(userRep.findById(id).orElse(null)));
+        User user = userRep.findById(id).orElse(null);
+        return Optional.ofNullable(mapper.userToUserDTO(user));
     }
 
     @Override
     public void likeFilm(Long userId, Long filmId) {
         UserFilm userFilm = new UserFilm();
         User user = userRep.findById(userId).orElseThrow(NotFoundException::new);
-        Film film = filmRep.findById(userId).orElseThrow(NotFoundException::new);
+        Film film = filmRep.findById(filmId).orElseThrow(NotFoundException::new);
         userFilm.add(user, film);
-        userRep.saveAndFlush(user);
-        filmRep.saveAndFlush(film);
+        userFilmRep.save(userFilm);
+
     }
 
     @Override
     public void deleteLikeFilm(Long userId, Long filmId) {
-        userRep.deleteLikeFilm(userId, filmId);
+        userFilmRep.delete(userRep.getUserFilm(userId, filmId));
     }
 
     @Override
@@ -116,13 +99,14 @@ public class UserServiceImpl implements UserService {
         User user1 = userRep.findById(userId).orElseThrow(NotFoundException::new);
         User user2 = userRep.findById(friendId).orElseThrow(NotFoundException::new);
         friendship.add(user1, user2);
-        userRep.saveAndFlush(user1);
-        userRep.saveAndFlush(user2);
+        friendshipRep.save(friendship);
+
     }
 
     @Override
-    public void deleteFriend(Long userId, Long friendId) { // ?????
-        userRep.deleteFriend(userId, friendId);
+    public void deleteFriend(Long userId, Long friendId) {
+        // ?????
+        friendshipRep.delete(userRep.getFriendship(userId, friendId));
     }
 
     @Override

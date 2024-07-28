@@ -2,10 +2,7 @@ package org.example.filmratev2simplev.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -14,6 +11,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = {"user", "film"})
 @Table(name = "user_film")
 @Entity
 public class UserFilm {
@@ -21,11 +20,11 @@ public class UserFilm {
     @EmbeddedId
     private Id id = new Id();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "user_id", insertable=false, updatable=false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "film_id", insertable=false, updatable=false)
     private Film film;
 

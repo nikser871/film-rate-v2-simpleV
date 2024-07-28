@@ -10,6 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode(of = "name")
+@ToString(exclude = "filmGenreList")
 @Builder
 @Table(name = "genres")
 public class Genre {

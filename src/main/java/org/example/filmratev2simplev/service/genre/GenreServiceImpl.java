@@ -1,7 +1,6 @@
 package org.example.filmratev2simplev.service.genre;
 
 import org.example.filmratev2simplev.config.AppProperties;
-import org.example.filmratev2simplev.dto.FilmDTO;
 import org.example.filmratev2simplev.dto.GenreDTO;
 import org.example.filmratev2simplev.mappers.GenreMapper;
 import org.example.filmratev2simplev.repositories.GenreRepository;
@@ -16,13 +15,11 @@ public class GenreServiceImpl implements GenreService {
 
     private final GenreMapper mapper;
     private final GenreRepository genreRep;
-    private final AppProperties appProperties;
 
     @Autowired
     public GenreServiceImpl(GenreMapper mapper, GenreRepository genreRep, AppProperties appProperties) {
         this.mapper = mapper;
         this.genreRep = genreRep;
-        this.appProperties = appProperties;
     }
 
     @Override

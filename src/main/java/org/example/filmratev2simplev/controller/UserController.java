@@ -2,20 +2,15 @@ package org.example.filmratev2simplev.controller;
 
 import org.example.filmratev2simplev.config.AppProperties;
 import org.example.filmratev2simplev.dto.UserDTO;
-import org.example.filmratev2simplev.model.User;
 import org.example.filmratev2simplev.service.user.UserService;
-import org.example.filmratev2simplev.service.user.UserServiceImpl;
-import org.example.filmratev2simplev.storage.user.UserStorage;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+
 
 @Slf4j
 @RestController
@@ -71,6 +66,7 @@ public class UserController {
 
     @DeleteMapping(DELETE_FILM)
     public ResponseEntity<String> deleteFilm(@PathVariable Long userId, @PathVariable Long filmId) {
+        userService.deleteLikeFilm(userId, filmId);
         return ResponseEntity.ok(
                 "DELETED FILM FROM FAVOURITES!!!"
         );

@@ -1,7 +1,6 @@
 package org.example.filmratev2simplev.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -13,6 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(of = "name")
+@ToString(exclude = {"filmGenres", "userFilms"})
 @Entity
 @Table(name = "films")
 public class Film {
@@ -23,7 +24,7 @@ public class Film {
 
 //    @NotNull(message = "Name is null")
 //    @NotBlank(message = "Name is null")
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     private String description;
@@ -39,7 +40,7 @@ public class Film {
     private Long duration;
 
     @Builder.Default
-    @OneToMany(mappedBy = "film", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "film", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH})
     private List<FilmGenre> filmGenres = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,7 +48,7 @@ public class Film {
     private Mpa mpa;
 
     @Builder.Default
-    @OneToMany(mappedBy = "film", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "film", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<UserFilm> userFilms = new ArrayList<>();
 
 

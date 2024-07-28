@@ -1,12 +1,9 @@
 package org.example.filmratev2simplev.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Immutable;
-import org.hibernate.mapping.Join;
+
 
 import java.io.Serializable;
 
@@ -15,6 +12,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @Entity
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = {"genre", "film"})
 @Table(name = "film_genre")
 @Immutable
 public class FilmGenre {
@@ -22,11 +21,11 @@ public class FilmGenre {
     @EmbeddedId
     private Id id = new Id();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "film_id", insertable=false, updatable=false)
     private Film film;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "genre_id", insertable=false, updatable=false)
     private Genre genre;
 

@@ -4,7 +4,7 @@ package org.example.filmratev2simplev.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.yaml.snakeyaml.events.Event;
+
 
 @Data
 @AllArgsConstructor

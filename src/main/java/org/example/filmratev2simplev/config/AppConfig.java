@@ -2,20 +2,14 @@ package org.example.filmratev2simplev.config;
 
 
 import org.example.filmratev2simplev.model.*;
-import org.example.filmratev2simplev.repositories.FilmRepository;
-import org.example.filmratev2simplev.repositories.GenreRepository;
-import org.example.filmratev2simplev.repositories.MpaRepository;
-import org.example.filmratev2simplev.repositories.UserRepository;
+import org.example.filmratev2simplev.repositories.*;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+
 
 @Configuration
 @EnableConfigurationProperties({AppProperties.class})
@@ -30,7 +24,10 @@ public class AppConfig {
     public CommandLineRunner commandLineRunner(GenreRepository genreRepository,
                                                FilmRepository filmRepository,
                                                MpaRepository  mpaRepository,
-                                               UserRepository userRepository) {
+                                               UserRepository userRepository,
+                                               FriendshipRepository friendshipRepository,
+                                               FilmGenreRepository filmGenreRepository,
+                                               UserFilmRepository userFilmRepository) {
         return args -> {
 
             Genre genre1 = Genre.builder().name("thriller").build();
@@ -55,7 +52,7 @@ public class AppConfig {
 
 
             User user3 = User.builder()
-                    .name("Maxim")
+                    .name("Valera")
                     .email("valera@mail.ru")
                     .login("valera2000")
                     .birthday(LocalDate.of(2001, 12, 12)).build();
@@ -93,6 +90,10 @@ public class AppConfig {
             filmGenre2.add(film1, genre2);
             filmGenre3.add(film2, genre2);
 
+            filmGenreRepository.save(filmGenre1);
+            filmGenreRepository.save(filmGenre2);
+            filmGenreRepository.save(filmGenre3);
+
 
 
 
@@ -105,6 +106,10 @@ public class AppConfig {
             friendship2.add(user1, user3);
             friendship3.add(user2, user3);
 
+            friendshipRepository.save(friendship1);
+            friendshipRepository.save(friendship2);
+            friendshipRepository.save(friendship3);
+
 
             UserFilm userFilm1 = new UserFilm();
             UserFilm userFilm2 = new UserFilm();
@@ -116,26 +121,26 @@ public class AppConfig {
             userFilm3.add(user2, film2);
             userFilm4.add(user3, film1);
 
-            userRepository.save(user1);
-            userRepository.save(user2);
-            userRepository.save(user3);
+            userFilmRepository.save(userFilm1);
+            userFilmRepository.save(userFilm2);
+            userFilmRepository.save(userFilm3);
+            userFilmRepository.save(userFilm4);
 
-            filmRepository.save(film1);
-            filmRepository.save(film2);
-
-            genreRepository.save(genre1);
-            genreRepository.save(genre2);
+//            userRepository.save(user1);
+//            userRepository.save(user2);
+//            userRepository.save(user3);
+//
+//            filmRepository.save(film1);
+//            filmRepository.save(film2);
+//
+//            genreRepository.save(genre1);
+//            genreRepository.save(genre2);
 
 
         };
 
 
 
-
-//        -- INSERT INTO user_film(user_id, film_id) VALUES (1, 1);
-//        -- INSERT INTO user_film(user_id, film_id) VALUES (1, 2);
-//        -- INSERT INTO user_film(user_id, film_id) VALUES (2, 2);
-//        -- INSERT INTO user_film(user_id, film_id) VALUES (3, 1);
     }
 
 }
