@@ -10,6 +10,8 @@ import org.example.filmratev2simplev.repositories.FilmRepository;
 import org.example.filmratev2simplev.repositories.GenreRepository;
 import org.example.filmratev2simplev.repositories.MpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,7 +40,6 @@ public class FilmServiceImpl implements FilmService {
         Film film1 = mapper.filmDTOToFilm(film);
 
 
-        List<FilmGenre> filmGenres = new ArrayList<>();
         film1.setFilmGenres(new ArrayList<>());
         film1.setUserFilms(new ArrayList<>());
         film1.setMpa(mpaRep.findById(film.getMpaId()).orElseThrow(NotFoundException::new));
@@ -49,13 +50,11 @@ public class FilmServiceImpl implements FilmService {
                     Genre genre = genreRep.findById(x).orElseThrow(NotFoundException::new);
                     FilmGenre filmGenre = new FilmGenre();
                     filmGenre.add(film1, genre);
-                    filmGenres.add(filmGenre);
+                    filmGenreRep.save(filmGenre);
 
                 });
 
 
-        film1.setFilmGenres(filmGenres);
-        filmGenreRep.saveAll(filmGenres);
         return Optional.of(getFilmDTO(filmRep.findById(film1.getId()).orElseThrow(NotFoundException::new)));
 
     }
@@ -70,24 +69,23 @@ public class FilmServiceImpl implements FilmService {
                     found.setDuration(film.getDuration());
                     found.setReleaseDate(film.getReleaseDate());
 
-                    List<FilmGenre> filmGenres = new ArrayList<>();
                     Mpa mpa = mpaRep.findById(film.getMpaId()).orElseThrow(NotFoundException::new);
-                    filmGenreRep.deleteAll(found.getFilmGenres());
+                    found.getFilmGenres().forEach(this::deleleFilmGenre);
+                    found.getFilmGenres().clear();
 
 
                     film.getGenresId().forEach(x -> {
                         FilmGenre filmGenre = new FilmGenre();
                         filmGenre.add(found, genreRep.findById(x).orElseThrow(NotFoundException::new));
-                        filmGenres.add(filmGenre);
                         filmGenreRep.save(filmGenre);
                     });
 
-                    found.setFilmGenres(filmGenres);
                     found.setMpa(mpa);
 
                     atomicReference.set(Optional.of(
                             getFilmDTO(filmRep.saveAndFlush(found))
                     ));
+
                 },
                 () -> atomicReference.set(Optional.empty())
         );
@@ -96,8 +94,6 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<FilmDTO> getAllFilms() {
-
-
         return filmRep.findAll().stream()
                 .map(this::getFilmDTO)
                 .toList();
@@ -137,6 +133,12 @@ public class FilmServiceImpl implements FilmService {
         dto.setGenresId(list);
         return dto;
     }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleleFilmGenre(FilmGenre filmGenre) {
+        filmGenreRep.delete(filmGenre);
+    }
+
 
 
 }

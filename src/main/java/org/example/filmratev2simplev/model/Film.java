@@ -40,7 +40,7 @@ public class Film {
     private Long duration;
 
     @Builder.Default
-    @OneToMany(mappedBy = "film", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "film", cascade = {CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FilmGenre> filmGenres = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,7 +48,7 @@ public class Film {
     private Mpa mpa;
 
     @Builder.Default
-    @OneToMany(mappedBy = "film", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "film", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH}, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<UserFilm> userFilms = new ArrayList<>();
 
 

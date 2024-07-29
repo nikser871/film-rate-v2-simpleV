@@ -32,7 +32,7 @@ public class Friendship {
         private Long friendId2;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id1", insertable=false, updatable=false)
     private User user1;
 

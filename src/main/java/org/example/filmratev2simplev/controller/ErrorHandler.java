@@ -18,21 +18,25 @@ public class ErrorHandler {
 
     @ExceptionHandler({NullPointerException.class, NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse objectNotFound(NullPointerException e){
+    public ErrorResponse objectNotFound(RuntimeException e){
         return new ErrorResponse("Object wasn't found");
     }
 
-    @ExceptionHandler({Throwable.class})
+
+    @ExceptionHandler({InternalServerError.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse internalError(InternalServerError e){
+        return new ErrorResponse("Internal Server Error");
+    }
+
+    @ExceptionHandler({Throwable.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse objectNotFound(Throwable e){
         return new ErrorResponse("Ошибка!!!");
     }
 
-    @ExceptionHandler({InternalServerError.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse internalError(Throwable e){
-        return new ErrorResponse(e.getMessage());
-    }
+
+
 
 
 

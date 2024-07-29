@@ -25,7 +25,7 @@ public class Genre {
     private String name;
 
     @Builder.Default
-    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "genre", cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH}, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<FilmGenre> filmGenreList = new ArrayList<>();
 
 }

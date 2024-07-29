@@ -3,6 +3,7 @@ package org.example.filmratev2simplev.service.genre;
 import org.example.filmratev2simplev.config.AppProperties;
 import org.example.filmratev2simplev.dto.GenreDTO;
 import org.example.filmratev2simplev.mappers.GenreMapper;
+import org.example.filmratev2simplev.model.Genre;
 import org.example.filmratev2simplev.repositories.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,9 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Optional<GenreDTO> getGenreById(Long id) {
+        Genre genre = genreRep.findById(id).orElse(null);
         return Optional.ofNullable(
-                mapper.genreToGenreDTO(genreRep.findById(id).orElse(null))
+                mapper.genreToGenreDTO(genre)
         );
     }
 }

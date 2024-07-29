@@ -109,7 +109,8 @@ public class UserController {
 
     @GetMapping(USER_ID)
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id).orElseThrow(NotFoundException::new));
+        UserDTO userDTO = userService.getUserById(id).orElseThrow(NotFoundException::new);
+        return ResponseEntity.ok(userDTO);
     }
 
 }

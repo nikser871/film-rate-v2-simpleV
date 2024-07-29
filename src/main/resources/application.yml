@@ -18,6 +18,7 @@ spring:
       ddl-auto: create
     show-sql: true
 
+
 #    defer-datasource-initialization: true
 
 custom:
@@ -26,4 +27,6 @@ custom:
   base-url-mpa: http://localhost:8080/mpa
   base-url-film: http://localhost:8080/films
   base-url-user: http://localhost:8080/users
+
+
 
